@@ -2,11 +2,6 @@
 """Determines if all boxes can be opened"""
 
 def canUnlockAll(boxes):
-        """
-    Determines if all locked boxes can be opened
-    based on keys that can be attained.
-    Solution to the lockboxes problem
-    """
     if not boxes or not isinstance(boxes, list):
         return False
 
