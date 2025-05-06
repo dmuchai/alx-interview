@@ -1,12 +1,7 @@
 #!/usr/bin/python3
 """
-Reads log lines from stdin one by one and calculates metrics
+reads stdin line by line and computes metrics
 """
-import sys
-import re
-from collections import defaultdict
-
-# Initialize counters
 total_size = 0
 status_counts = defaultdict(int)
 line_counter = 0
