@@ -1,48 +1,44 @@
 #!/usr/bin/python3
-"""
-reads stdin line by line and computes metrics
-"""
-total_size = 0
-status_counts = defaultdict(int)
-line_counter = 0
 
-# List of valid status codes (as strings)
-valid_status_codes = {'200', '301', '400', '401', '403', '404', '405', '500'}
+""" reads stdin line by line and computes metric"""
 
-# Regex pattern to match the valid log line
-log_pattern = re.compile(
-    r'^\S+ - \[.+\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$'
-)
+if __name__ == '__main__':
 
-def print_stats():
-    """
-    Print current statistics: total file size and status code counts.
-    """
-    print(f"File size: {total_size}")
-    for code in sorted(status_counts.keys()):
-        print(f"{code}: {status_counts[code]}")
+    def printer(file_size, status):
 
-try:
-    for line in sys.stdin:
-        line = line.strip()
-        match = log_pattern.match(line)
-        if match:
-            status_code, file_size_str = match.groups()
-            if status_code in valid_status_codes:
-                status_counts[status_code] += 1
-            try:
-                total_size += int(file_size_str)
-            except ValueError:
-                pass  # Ignore bad file sizes
+        '''Print logs'''
 
-        line_counter += 1
-        if line_counter % 10 == 0:
-            print_stats()
+        print("File size: {:d}".format(file_size))
+        for i in sorted(status.keys()):
+            if status[i] != 0:
+                print("{}: {}".format(i, status[i]))
 
-except KeyboardInterrupt:
-    # On Ctrl+C, print the stats before exiting
-    print_stats()
-    raise
+    file_size = 0
+    status = {"200": 0, "301": 0, "400": 0, "401": 0,
+              "403": 0, "404": 0, "405": 0, "500": 0}
 
-# Print final stats if not already done
-print_stats()
+    counter = 0
+    try:
+        with open(0) as f:
+            for line in f:
+                counter += 1
+                data = line.split()
+
+                try:
+                    file_size += int(data[-1])
+                except Exception:
+                    pass
+
+                try:
+                    st = data[-2]
+                    if st in status:
+                        status[st] += 1
+
+                except Exception:
+                    pass
+                if counter % 10 == 0:
+                    printer(file_size, status)
+            printer(file_size, status)
+    except KeyboardInterrupt:
+        printer(file_size, status)
+        raise
