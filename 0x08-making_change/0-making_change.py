@@ -1,17 +1,25 @@
 #!/usr/bin/python3
-"""
-Minimum Coins Change
-"""
+"""Minimum Coins Change Problem"""
+
+
 def makeChange(coins, total):
+    """Making Coin Changes"""
     if total <= 0:
         return 0
-
-    # Initialize DP array with total+1 (impossible high value)
-    dp = [float('inf')] * (total + 1)
-    dp[0] = 0  # Base case: 0 coins needed to make total 0
-
-    for coin in coins:
-        for i in range(coin, total + 1):
-            dp[i] = min(dp[i], dp[i - coin] + 1)
-
-    return dp[total] if dp[total] != float('inf') else -1
+    elif total > 0:
+        newList = sorted(coins[:])
+        newList = list(reversed(newList))
+        count = 0
+        value = total + 0
+        index = 0
+        while value >= 0 and (index < len(newList)):
+            if value >= newList[index]:
+                value = value - newList[index]
+                count += 1
+            elif value < newList[index]:
+                index += 1
+        if index == len(newList):
+            if value != 0:
+                return -1
+            elif value == 0:
+                return count
